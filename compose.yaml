@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: bronzeamento-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: bronzeamento_db
+      MYSQL_USER: diogo
+      MYSQL_PASSWORD: 279045
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - bronzeamento-network
+
+  app:
+    build: .
+    container_name: bronzeamento-app
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/bronzeamento_db
+      SPRING_DATASOURCE_USERNAME: diogo
+      SPRING_DATASOURCE_PASSWORD: 279045
+    depends_on:
+      - db
+    networks:
+      - bronzeamento-network
+
+volumes:
+  db_data:
+
+networks:
+  bronzeamento-network:
